@@ -3,25 +3,26 @@ window.addEventListener('DOMContentLoaded', function() {
 	'use strict';
 
 //POPUPs
-	let modal = document.querySelectorAll('.modal'),
-		close = document.querySelectorAll('.close'),
-		popupEngineerBtn = document.querySelector('.popup_engineer_btn'),
+	let popupEngineerBtn = document.querySelector('.popup_engineer_btn'),
+		popupEngineer = document.querySelector('.popup_engineer'),
+		closePopupEngineer = document.querySelectorAll('.popup_close')[1],
+		popup = document.querySelector('.popup'),
+		closePopup = document.querySelectorAll('.popup_close')[0],
 		callbackHeader = document.querySelectorAll('.phone_link')[0],
 		callbackFeedback = document.querySelectorAll('.phone_link')[1],
-		popup = document.querySelector('.popup'),
-		engineerPopup = document.querySelector('.popup_engineer'),
 		calc = document.querySelectorAll('.calc'),
+		close = document.querySelectorAll('.close'),
 		popupCalc = document.querySelector('.popup_calc'),
-		calcProfile = document.querySelector('.popup_calc_profile'),
-		calcEnd = document.querySelector('.popup_calc_end'),
-		closePopup = document.querySelectorAll('.popup_close')[0],
-		closeEngineerPopup = document.querySelectorAll('.popup_close')[1],
+		popupCalcBtn = document.querySelectorAll('.popup_calc_button'),
 		popupCalcClose = document.querySelector('.popup_calc_close'),
-		before = document.querySelector;
+		calcProfile = document.querySelector('.popup_calc_profile'),
+		calcProfileBtn = document.querySelectorAll('.popup_calc_profile_button'),
+		calcEnd = document.querySelector('.popup_calc_end');
+
 
 //show popup
 	let showEngineerPopup = event => {
-		engineerPopup.style.display = 'block';
+		popupEngineer.style.display = 'block';
 		document.body.style.overflow = 'hidden';
 	};
 	popupEngineerBtn.addEventListener('click', showEngineerPopup);
@@ -36,18 +37,18 @@ window.addEventListener('DOMContentLoaded', function() {
 
 //close popup 
 	let closePopups = event => {
-		engineerPopup.style.display = 'none';
+		popupEngineer.style.display = 'none';
 		popup.style.display = 'none';
 		document.body.style.overflow = '';
 		if (event.target.matches('div.popup_engineer')) {
-            engineerPopup.style.display = 'none';
-        };
+            popupEngineer.style.display = 'none';
+        }
         if (event.target.matches('div.popup')) {
             popup.style.display = 'none';
-        };
+        }
 	};
 	closePopup.addEventListener('click', closePopups);
-	closeEngineerPopup.addEventListener('click', closePopups);
+	closePopupEngineer.addEventListener('click', closePopups);
 
 //popup via 60s
 	let laterPopup = event => {};
@@ -87,12 +88,11 @@ window.addEventListener('DOMContentLoaded', function() {
 		iconsBox = document.querySelector('.balcon_icons'),
 		icons = document.querySelectorAll('.balcon_icon'),
 		balconImg = document.querySelectorAll('.balcon_img'),
-		profile = document.querySelectorAll('.popup_calc_button'),
-		end = document.querySelectorAll('.popup_calc_profile_button'),
 		width = document.getElementById('width'),
-		height = document.getElementById('height');
+		height = document.getElementById('height'),
+		balconType;
 
-//окно калькулятора
+//окно "форма и размеры"
 	glazingPriceBtn.forEach(function(item) {
     	item.addEventListener('click', function() {
       		popupCalc.style.display = 'block';
@@ -138,6 +138,21 @@ window.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+//выбор типа окна
+	icons.forEach(function(item) {
+    	item.addEventListener('click', function(event) {
+	    	if (event.target.classList.contains('type1')) {
+	        	balconType = 'Тип 1';
+	    	} else if (event.target.classList.contains('type2')) {
+	        	balconType = 'Тип 2';
+	    	} else if (event.target.classList.contains('type3')) {
+	        	balconType = 'Тип 3';
+	    	} else if (event.target.classList.contains('type4')) {
+	        	balconType = 'Тип 4';
+		    }
+	    });
+	});
+
 //input
 	function replaceCalcInput() {
 		this.value = this.value.replace (/[^0-9]/g, '');
@@ -146,7 +161,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	height.oninput = replaceCalcInput;
 
 //переход на мод. окно profile
-	profile.forEach(function(item) {
+	popupCalcBtn.forEach(function(item) {
     	item.addEventListener('click', function() {
       		popupCalc.style.display = 'none';
 			calcProfile.style.display = 'block';
@@ -154,16 +169,24 @@ window.addEventListener('DOMContentLoaded', function() {
 	});	
 
 //checkbox 
+	let checkCold = document.querySelectorAll('.checkbox')[0],
+		checkWarm = document.querySelectorAll('.checkbox')[1];
 	
+		checkCold.addEventListener("click", function() {
+    		checkWarm.checked = false;
+  		});
+
+  		checkWarm.addEventListener("click", function() {
+    		checkCold.checked = false;
+  	});
 
 //переход на мод. окно end
-	end.forEach(function(item) {
+	calcProfileBtn.forEach(function(item) {
     	item.addEventListener('click', function() {
       		calcProfile.style.display = 'none';
 			calcEnd.style.display = 'block';
 		});
 	});
-
 
 //TABs DECORATION
 	let decorSwitch = document.querySelector('.decoration_slider'),
@@ -238,14 +261,17 @@ window.addEventListener('DOMContentLoaded', function() {
 		formInput = document.getElementsByTagName('input'),
 		userName = document.querySelectorAll('.user_name'),
         userPhone = document.querySelectorAll('.user_phone'),
+        sendBtn = document.querySelectorAll('.btn-block'),
+        selectGlazing = document.getElementById('view_type'),
         statusMessage = document.createElement('div');
 
     statusMessage.classList.add('status');
 
-	function replaceFormInput() {
-		this.value = this.value.replace (/[^0-9]/g, '');
-	}
-	userPhone.oninput = replaceFormInput;
+	userPhone.forEach(function(elem) {
+		elem.addEventListener('input', function(event) {
+			this.value = this.value.replace (/[^0-9]/g, '');
+		});
+	});
 
 	form.forEach(function(elem) {
 		elem.addEventListener('submit', function(event) {
@@ -253,6 +279,39 @@ window.addEventListener('DOMContentLoaded', function() {
 			elem.appendChild(statusMessage);
 
 		let formData = new FormData(elem);
+
+//имя-телефон
+		sendBtn.forEach(function(elem) {
+			elem.addEventListener('click', function() {
+		    	formData.append("Имя ", userName.value);
+		    	formData.append("Телефон ", userPhone.value);
+	    	});
+		});
+
+//форма-ширина
+		popupCalcBtn.forEach(function(item) {
+    		item.addEventListener('click', function() {
+				formData.append('Форма балкона ', balconType);
+				formData.append('Ширина: ', width.value);
+	    		formData.append('Высота: ', height.value);
+			});
+		});	
+
+//тип остекления
+		selectGlazing.addEventListener('change', function(){
+    		formData.append("Тип остекления ", selectGlazing.options[selectGlazing.selectedIndex].innerHTML);
+ 		});
+
+//профиль
+		calcProfileBtn.forEach(function(elem) {
+			elem.addEventListener('click', function(){
+	    		if (checkCold.checked === true) {
+	        		formData.append('Тип остекления: ', 'холодное');
+	    		} else if (checkWarm.checked === true) {
+	         		formData.append('Тип остекления: ', 'теплое');
+			    }
+			});    
+		});
 
 		let request = new XMLHttpRequest();
 			request.open('POST', 'server.php');
@@ -276,7 +335,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				} else {
 					statusMessage.innerHTML = message.failure;
 				}
-			}
+			};
 
 			for (let i = 0; i < formInput.length; i++) {
 				formInput[i].value = '';
