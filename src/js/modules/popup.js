@@ -22,6 +22,7 @@ function popup() {
 
 
 	let showPopup = event => {
+		event.preventDefault();
 		popup.style.display = 'block';
 		document.body.style.overflow = 'hidden';
 	};

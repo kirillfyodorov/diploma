@@ -2126,6 +2126,7 @@ function popup() {
   popupEngineerBtn.addEventListener('click', showEngineerPopup);
 
   var showPopup = function showPopup(event) {
+    event.preventDefault();
     popup.style.display = 'block';
     document.body.style.overflow = 'hidden';
   };
