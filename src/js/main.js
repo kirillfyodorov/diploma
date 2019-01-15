@@ -17,8 +17,8 @@ window.addEventListener('DOMContentLoaded', function() {
 		popupCalcClose = document.querySelector('.popup_calc_close'),
 		calcProfile = document.querySelector('.popup_calc_profile'),
 		calcProfileBtn = document.querySelectorAll('.popup_calc_profile_button'),
-		calcEnd = document.querySelector('.popup_calc_end');
-
+		calcEnd = document.querySelector('.popup_calc_end'),
+		overlay = document.querySelector('.overlay');
 
 //show popup
 	let showEngineerPopup = event => {
@@ -36,20 +36,26 @@ window.addEventListener('DOMContentLoaded', function() {
 	callbackFeedback.addEventListener('click', showPopup);
 
 //close popup 
-	let closePopups = event => {
-		popupEngineer.style.display = 'none';
-		popup.style.display = 'none';
-		document.body.style.overflow = '';
-		if (event.target.matches('div.popup_engineer')) {
+	popupEngineer.addEventListener('click', function() {
+		if (event.target && event.target.matches('strong')) {
+			popupEngineer.style.display = 'none';
+			document.body.style.overflow = '';
+		} else if (event.target && event.target.matches('div.popup_engineer')) {
             popupEngineer.style.display = 'none';
+            document.body.style.overflow = '';
         }
-        if (event.target.matches('div.popup')) {
-            popup.style.display = 'none';
-        }
-	};
-	closePopup.addEventListener('click', closePopups);
-	closePopupEngineer.addEventListener('click', closePopups);
+	});
 
+	popup.addEventListener('click', function() {
+		if (event.target && event.target.matches('strong')) {
+			popup.style.display = 'none';
+			document.body.style.overflow = '';
+		} else if (event.target && event.target.matches('div.popup')) {
+            popup.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+	});
+  
 //popup via 60s
 	let laterPopup = event => {};
 		setTimeout(showPopup, 60000);	
@@ -57,7 +63,10 @@ window.addEventListener('DOMContentLoaded', function() {
 // TABs GLAZING
 	let glazingTabSwitch = document.querySelector('.glazing_slider'),
 		glazingTab = document.querySelectorAll('.glazing_block'),
+		glazingTabLink = document.querySelectorAll('.glazing_tab'),
+		glazingImg = document.querySelectorAll('.glazing_img'),
 		glazingTabContent = document.querySelectorAll('.glazing_content');
+
 
 	let hideGlazingTab = a => {
 		for (let i = a; i < glazingTabContent.length; i++) {
@@ -67,19 +76,18 @@ window.addEventListener('DOMContentLoaded', function() {
 	hideGlazingTab(1);
 
 	let showGlazingTab = b => {
-		glazingTabContent[b].style.display = "block";
+		glazingTabContent[b].style.display = "flex";
 	};
 
 	glazingTabSwitch.addEventListener('click', event => {
 		let target = event.target;
-		if (target && target.classList.contains('glazing_block')) {
-			for (let i = 0; i < glazingTab.length; i++) {
-				if (target == glazingTab[i]) {
-					hideGlazingTab(0);
-					showGlazingTab(i);
-					break;
-				}
-			}
+		for (let i = 0; i < glazingTab.length; i++) {
+			if (target == glazingTab[i] || target == glazingTabLink[i] || target == glazingImg[i]) {
+				hideGlazingTab(0);
+				showGlazingTab(i);
+				glazingTab[i].classList.add('animated');
+      			break;
+			}	    	
 		}
 	});
 
@@ -90,7 +98,16 @@ window.addEventListener('DOMContentLoaded', function() {
 		balconImg = document.querySelectorAll('.balcon_img'),
 		width = document.getElementById('width'),
 		height = document.getElementById('height'),
-		balconType;
+		selectGlazing = document.getElementById('view_type'),
+		checkCold = document.querySelectorAll('.checkbox')[0],
+		checkWarm = document.querySelectorAll('.checkbox')[1],
+		balconType,
+		calcForm = document.querySelector('.calc_form'),
+		calcFormInput = document.getElementsByClassName('form_input'),
+		calcUserName = document.querySelectorAll('.user_name')[9],
+        calcUserPhone = document.querySelectorAll('.user_phone')[7],
+        sendCalcBtn = document.querySelectorAll('.btn-block')[8],
+		calcData = new FormData();
 
 //окно "форма и размеры"
 	glazingPriceBtn.forEach(function(item) {
@@ -103,6 +120,12 @@ window.addEventListener('DOMContentLoaded', function() {
 //закрыть окна калькуляторов
 	close.forEach(function(item) {
     	item.addEventListener('click', function() {
+    		width.value = '';
+    		height.value = '';
+    		checkCold.checked = false;
+    		checkWarm.checked = false;
+    		calcUserName.value = '';
+        	calcUserPhone.value = '';
 			for (let i = 0; i < close.length; i++) {
 		    	calc[i].style.display = 'none';
 				document.body.style.overflow = '';
@@ -139,18 +162,16 @@ window.addEventListener('DOMContentLoaded', function() {
 	});
 
 //выбор типа окна
-	icons.forEach(function(item) {
-    	item.addEventListener('click', function(event) {
-	    	if (event.target.classList.contains('type1')) {
-	        	balconType = 'Тип 1';
-	    	} else if (event.target.classList.contains('type2')) {
-	        	balconType = 'Тип 2';
-	    	} else if (event.target.classList.contains('type3')) {
-	        	balconType = 'Тип 3';
-	    	} else if (event.target.classList.contains('type4')) {
-	        	balconType = 'Тип 4';
-		    }
-	    });
+	iconsBox.addEventListener('click', function(event) {
+	    if (event.target.classList.contains('type1_img')) {
+	        balconType = 'тип 1';
+	    } else if (event.target.classList.contains('type2_img')) {
+	        balconType = 'тип 2';
+	    } else if (event.target.classList.contains('type3_img')) {
+	        balconType = 'тип 3';
+	    } else if (event.target.classList.contains('type4_img')) {
+	        balconType = 'тип 4';
+		}
 	});
 
 //input
@@ -160,41 +181,110 @@ window.addEventListener('DOMContentLoaded', function() {
 	width.oninput = replaceCalcInput;
 	height.oninput = replaceCalcInput;
 
-//переход на мод. окно profile
+//переход на мод. окно profile + форма-ширина
 	popupCalcBtn.forEach(function(item) {
     	item.addEventListener('click', function() {
       		popupCalc.style.display = 'none';
 			calcProfile.style.display = 'block';
+			calcData.append('Форма балкона', balconType);
+			calcData.append('Ширина', width.value);
+	    	calcData.append('Высота', height.value);
 		});
 	});	
 
-//checkbox 
-	let checkCold = document.querySelectorAll('.checkbox')[0],
-		checkWarm = document.querySelectorAll('.checkbox')[1];
-	
-		checkCold.addEventListener("click", function() {
-    		checkWarm.checked = false;
-  		});
+//тип остекления
+	selectGlazing.addEventListener('change', function(){
+    	calcData.append('Тип остекления', selectGlazing.options[selectGlazing.selectedIndex].innerHTML);
+ 	});
 
-  		checkWarm.addEventListener("click", function() {
-    		checkCold.checked = false;
+//checkbox 
+	checkCold.addEventListener("click", function() {
+    	checkWarm.checked = false;
   	});
 
-//переход на мод. окно end
+  	checkWarm.addEventListener("click", function() {
+    	checkCold.checked = false;
+  	});
+
+//переход на мод. окно end + выбор профиля
 	calcProfileBtn.forEach(function(item) {
     	item.addEventListener('click', function() {
       		calcProfile.style.display = 'none';
 			calcEnd.style.display = 'block';
+			if (checkCold.checked === true) {
+	        	calcData.append('Профиль остекления', 'холодное');
+	    	} else if (checkWarm.checked === true) {
+	         	calcData.append('Профиль остекления', 'теплое');
+			}
 		});
 	});
 
+//имя-телефон
+	sendCalcBtn.addEventListener('click', function() {
+		calcData.append('Имя', calcUserName.value);
+		calcData.append('Телефон', calcUserPhone.value);
+	});
+
+//calcForm
+	let calcMessage = {
+		loading: 'Загрузка...',
+		success: 'Спасибо! Скоро мы с Вами свяжемся!',
+		failure: 'Видимо что-то случилось...'
+	};
+
+	let statusCalcMessage = document.createElement('div');
+
+	statusCalcMessage.classList.add('status');
+
+	calcUserPhone.addEventListener('input', function(event) {
+		this.value = this.value.replace (/[^0-9]/g, '');
+	});
+
+	function sendCalcForm(elem) {
+        elem.addEventListener('submit', function(event) {
+			event.preventDefault();
+			elem.appendChild(statusCalcMessage);
+
+		let request = new XMLHttpRequest();
+			request.open('POST', 'server.php');
+			request.setRequestHeader ('Content-type', 'application/json; charset=utf-8');
+
+		let obj = {};
+		
+		calcData.forEach( function(value, key) {
+			obj[key] = value;
+		});
+
+		let json = JSON.stringify(obj);
+
+			request.send(json);
+
+			request.onreadystatechange = function() {
+				if (request.readyState < 4) {
+					statusCalcMessage.innerHTML = calcMessage.loading;
+				} else if (request.readyState === 4 && request.status == 200) {
+					statusCalcMessage.innerHTML = calcMessage.success;
+				} else {
+					statusCalcMessage.innerHTML = calcMessage.failure;
+				}
+			};
+
+			for (let i = 0; i < calcFormInput.length; i++) {
+				calcFormInput[i].value = '';
+			}
+		});	
+	}
+	sendCalcForm(calcForm);
+
 //TABs DECORATION
 	let decorSwitch = document.querySelector('.decoration_slider'),
+		decorItem = document.querySelectorAll('.decoration_item'),
 		decor = document.querySelectorAll('.decoration_link'),
-		decorContent = document.querySelectorAll('.link_content');
+		decorContent = document.querySelectorAll('.link_content'),
+		decorLink = document.querySelectorAll('.decor_link');
 
 	let hideDecor = a => {
-		for (let i = a; i < decor.length; i++) {
+		for (let i = a; i < decorContent.length; i++) {
 			decor[i].classList.remove('after_click');
 			decor[i].classList.add('no_click');
 			decorContent[i].style.display = "none";
@@ -206,19 +296,17 @@ window.addEventListener('DOMContentLoaded', function() {
 		if (decor[b].classList.contains('no_click')) {
 			decor[b].classList.remove('no_click');
 			decor[b].classList.add('after_click');
-			decorContent[b].style.display = "block";
+			decorContent[b].style.display = "flex";
 		}
 	};
 
 	decorSwitch.addEventListener('click', event => {
 		let target = event.target;
-		if (target && target.classList.contains('decoration_link')) {
-			for (let i = 0; i < decor.length; i++) {
-				if (target == decor[i]) {
-					hideDecor(0);
-					showDecor(i);
-					break;
-				}
+		for (let i = 0; i < decor.length; i++) {
+			if (target == decor[i] || target == decorLink[i]) {
+				hideDecor(0);
+				showDecor(i);
+				break;
 			}
 		}
 	});
@@ -226,43 +314,46 @@ window.addEventListener('DOMContentLoaded', function() {
 //GALLERRY
 	let imageBox = document.querySelectorAll('.img-box'),
 		bigImg = document.querySelectorAll('.big-img'),
-    	overlay = document.querySelector('.overlay'),
+		overlayDiv = document.createElement('div'),
     	image = document.createElement('img');
 
-    overlay.appendChild(image);
+    overlay.appendChild(overlayDiv);
+    overlayDiv.appendChild(image);
+    overlayDiv.className = 'box';
     image.className = 'image-box';
 
     bigImg.forEach(function(item) {
         item.addEventListener('click', function(event) {
             event.preventDefault();
             overlay.style.display = 'block';
+            overlayDiv.style.display = 'block';
+			overlayDiv.classList.add('animated');
+			overlayDiv.classList.add('zoomIn');
             image.style.display = 'block';
             image.src = this.href;
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';   
         });
     });
 
     overlay.addEventListener('click', function(event){
-        if(event.target.className != 'image-box') {
+        if(event.target.className != 'image-box' || event.target.className != 'box') {
             this.style.display = 'none';
-            image.style.display = 'none';
+            overlayDiv.style.display = 'none';
+            //image.style.display = 'none';
             document.body.style.overflow = '';
         }
     });
 
-//FORM
+//PRIMARY FORM
 	let message = {
 		loading: 'Загрузка...',
 		success: 'Спасибо! Скоро мы с Вами свяжемся!',
 		failure: 'Видимо что-то случилось...'
 	};
 
-	let form = document.querySelectorAll('.form'),
+	let primaryForm = document.querySelectorAll('.primary_form'),
 		formInput = document.getElementsByTagName('input'),
-		userName = document.querySelectorAll('.user_name'),
-        userPhone = document.querySelectorAll('.user_phone'),
-        sendBtn = document.querySelectorAll('.btn-block'),
-        selectGlazing = document.getElementById('view_type'),
+		userPhone = document.querySelectorAll('.primary_form_phone'),
         statusMessage = document.createElement('div');
 
     statusMessage.classList.add('status');
@@ -273,45 +364,12 @@ window.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 
-	form.forEach(function(elem) {
-		elem.addEventListener('submit', function(event) {
+	primaryForm.forEach(function(elem) {
+        elem.addEventListener('submit', function(event) {
 			event.preventDefault();
 			elem.appendChild(statusMessage);
 
 		let formData = new FormData(elem);
-
-//имя-телефон
-		sendBtn.forEach(function(elem) {
-			elem.addEventListener('click', function() {
-		    	formData.append("Имя ", userName.value);
-		    	formData.append("Телефон ", userPhone.value);
-	    	});
-		});
-
-//форма-ширина
-		popupCalcBtn.forEach(function(item) {
-    		item.addEventListener('click', function() {
-				formData.append('Форма балкона ', balconType);
-				formData.append('Ширина: ', width.value);
-	    		formData.append('Высота: ', height.value);
-			});
-		});	
-
-//тип остекления
-		selectGlazing.addEventListener('change', function(){
-    		formData.append("Тип остекления ", selectGlazing.options[selectGlazing.selectedIndex].innerHTML);
- 		});
-
-//профиль
-		calcProfileBtn.forEach(function(elem) {
-			elem.addEventListener('click', function(){
-	    		if (checkCold.checked === true) {
-	        		formData.append('Тип остекления: ', 'холодное');
-	    		} else if (checkWarm.checked === true) {
-	         		formData.append('Тип остекления: ', 'теплое');
-			    }
-			});    
-		});
 
 		let request = new XMLHttpRequest();
 			request.open('POST', 'server.php');
@@ -319,7 +377,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		let obj = {};
 		
-		formData.forEach( function(value, key) {
+		formData.forEach(function(value, key) {
 			obj[key] = value;
 		});
 
@@ -344,7 +402,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	});
 
 //TIMER
-	let deadline = '2019-01-16';
+	let deadline = '2019-01-17';
 
 	let getTimeRemaining = endtime => {
 		let t = Date.parse(endtime) - Date.parse(new Date()),
