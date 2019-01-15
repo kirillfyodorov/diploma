@@ -8,7 +8,6 @@ function popup() {
 		callbackHeader = document.querySelectorAll('.phone_link')[0],
 		callbackFeedback = document.querySelectorAll('.phone_link')[1],
 		calc = document.querySelectorAll('.calc'),
-		popupCalc = document.querySelector('.popup_calc'),
 		popupCalcClose = document.querySelector('.popup_calc_close'),
 		calcProfile = document.querySelector('.popup_calc_profile'),
 		calcEnd = document.querySelector('.popup_calc_end'),

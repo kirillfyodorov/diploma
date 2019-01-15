@@ -1694,6 +1694,7 @@ __webpack_require__.r(__webpack_exports__);
 //GLAZING CALCULATOR
 function calc() {
   var close = document.querySelectorAll('.close'),
+      popupCalc = document.querySelector('.popup_calc'),
       popupCalcBtn = document.querySelectorAll('.popup_calc_button'),
       calcProfileBtn = document.querySelectorAll('.popup_calc_profile_button'),
       glazingPriceBtn = document.querySelectorAll('.glazing_price_btn'),
@@ -2112,7 +2113,6 @@ function popup() {
       callbackHeader = document.querySelectorAll('.phone_link')[0],
       callbackFeedback = document.querySelectorAll('.phone_link')[1],
       calc = document.querySelectorAll('.calc'),
-      popupCalc = document.querySelector('.popup_calc'),
       popupCalcClose = document.querySelector('.popup_calc_close'),
       calcProfile = document.querySelector('.popup_calc_profile'),
       calcEnd = document.querySelector('.popup_calc_end'),

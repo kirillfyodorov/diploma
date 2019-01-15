@@ -1,6 +1,7 @@
 //GLAZING CALCULATOR
 function calc() {
 	let close = document.querySelectorAll('.close'),
+		popupCalc = document.querySelector('.popup_calc'),
 		popupCalcBtn = document.querySelectorAll('.popup_calc_button'),
 		calcProfileBtn = document.querySelectorAll('.popup_calc_profile_button'),
 		glazingPriceBtn = document.querySelectorAll('.glazing_price_btn'),
